@@ -6,25 +6,35 @@ CREATE TABLE IF NOT EXISTS PersonInformation(
     Customer_Primary_Phone varchar NOT NULL CHECK (Customer_Primary_Phone SIMILAR TO '\+7[0-9]{10}')
 );
 
--- DROP TABLE PersonInformation;
-
--- INSERT INTO PersonInformation VALUES (1, 'Peter', 'Иванов', 'pe-tr@i.ru', '+79180074077');
-
 CREATE TABLE IF NOT EXISTS Cards(
     Customer_Card_ID bigint primary key NOT NULL,
     Customer_ID bigint NOT NULL references PersonInformation(Customer_ID)
 );
 
--- DROP TABLE Cards;
+CREATE TABLE IF NOT EXISTS SKUGroup(
+    Group_ID bigint NOT NULL primary key,
+    Group_Name varchar NOT NULL CHECK (Group_Name SIMILAR TO '[A-ZА-ЯЁa-zа-яё0-9\s\-\.,:;!?"()$@%#&*+=/\\]+')
+);
 
--- INSERT INTO Cards VALUES (1, 1);
+CREATE TABLE IF NOT EXISTS ProductGrid(
+    SKU_ID bigint NOT NULL primary key,
+    SKU_Name varchar NOT NULL CHECK (SKU_Name SIMILAR TO '[A-ZА-ЯЁa-zа-яё0-9\s\-\.,:;!?"()$@%#&*+=/\\]+'),
+    Group_ID bigint NOT NULL references SKUGroup(Group_ID)
+);
+
+CREATE TABLE IF NOT EXISTS Stores(
+    Transaction_Store_ID bigint NOT NULL,
+    SKU_ID bigint NOT NULL references ProductGrid(SKU_ID),
+    SKU_Purchase_Price numeric NOT NULL,
+    SKU_Retail_Price numeric NOT NULL
+);
 
 CREATE TABLE IF NOT EXISTS Transactions(
     Transaction_ID bigint NOT NULL primary key,
     Customer_Card_ID bigint NOT NULL references Cards(Customer_Card_ID),
     Transaction_Summ numeric NOT NULL,
-    Transaction_DateTime timestamp NOT NULL,
-    Transaction_Store_ID bigint NOT NULL references Stores(Store_ID)
+    Transaction_DateTime timestamp NOT NULL CHECK (to_char(Transaction_DateTime, 'DD.MM.YYYY HH24:MI:SS'::text) SIMILAR TO '[0-9]{2}\.[0-9]{2}\.[0-9]{4} [0-9]{2}:[0-9]{2}:[0-9]{2}'),
+    Transaction_Store_ID bigint NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS Checks(
@@ -36,20 +46,31 @@ CREATE TABLE IF NOT EXISTS Checks(
     SKU_Discount numeric NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS ProductGrid(
-    SKU_ID bigint NOT NULL primary key,
-    SKU_Name varchar NOT NULL CHECK (SKU_Name SIMILAR TO ''),
-    Group_ID bigint NOT NULL references SKUGroup(Group_ID)
-);
-
-CREATE TABLE IF NOT EXISTS Stores(
-
-);
-
-CREATE TABLE IF NOT EXISTS SKUGroup(
-
-);
-
 CREATE TABLE IF NOT EXISTS DateOfAnalysisFormation(
-
+    Analysis_Formation timestamp NOT NULL  CHECK (to_char(Analysis_Formation, 'DD.MM.YYYY HH24:MI:SS'::text) SIMILAR TO '[0-9]{2}\.[0-9]{2}\.[0-9]{4} [0-9]{2}:[0-9]{2}:[0-9]{2}')
 );
+
+CREATE PROCEDURE prc_dataImport(t VARCHAR, path VARCHAR, delimit VARCHAR)
+LANGUAGE plpgsql AS $$
+    BEGIN
+        EXECUTE FORMAT('COPY %s FROM %L WITH DELIMITER %L CSV;', t, path, delimit);
+    END;
+$$;
+
+-- CALL prc_dataImport('PersonInformation', 'C:\Coding\Projects\SQL3\datasets\Personal_Data_Mini.tsv', E'\t');
+-- CALL prc_dataImport('Cards', 'C:\Coding\Projects\SQL3\datasets\Cards_Mini.tsv', E'\t');
+-- CALL prc_dataImport('SKUGroup', 'C:\Coding\Projects\SQL3\datasets\Groups_SKU_Mini.tsv', E'\t');
+-- CALL prc_dataImport('ProductGrid', 'C:\Coding\Projects\SQL3\datasets\SKU_Mini.tsv', E'\t');
+-- CALL prc_dataImport('Stores', 'C:\Coding\Projects\SQL3\datasets\Stores_Mini.tsv', E'\t');
+-- CALL prc_dataImport('Transactions', 'C:\Coding\Projects\SQL3\datasets\Transactions_Mini.tsv', E'\t');
+-- CALL prc_dataImport('Checks', 'C:\Coding\Projects\SQL3\datasets\Checks_Mini.tsv', E'\t');
+-- CALL prc_dataImport('DateOfAnalysisFormation', 'C:\Coding\Projects\SQL3\datasets\Date_Of_Analysis_Formation.tsv', E'\t');
+
+-- CALL prc_dataImport('PersonInformation', 'C:\Coding\Projects\SQL3\datasets\Personal_Data.tsv', E'\t');
+-- CALL prc_dataImport('Cards', 'C:\Coding\Projects\SQL3\datasets\Cards.tsv', E'\t');
+-- CALL prc_dataImport('SKUGroup', 'C:\Coding\Projects\SQL3\datasets\Groups_SKU.tsv', E'\t');
+-- CALL prc_dataImport('ProductGrid', 'C:\Coding\Projects\SQL3\datasets\SKU.tsv', E'\t');
+-- CALL prc_dataImport('Stores', 'C:\Coding\Projects\SQL3\datasets\Stores.tsv', E'\t');
+-- CALL prc_dataImport('Transactions', 'C:\Coding\Projects\SQL3\datasets\Transactions.tsv', E'\t');
+-- CALL prc_dataImport('Checks', 'C:\Coding\Projects\SQL3\datasets\Checks.tsv', E'\t');
+-- CALL prc_dataImport('DateOfAnalysisFormation', 'C:\Coding\Projects\SQL3\datasets\Date_Of_Analysis_Formation.tsv', E'\t');
