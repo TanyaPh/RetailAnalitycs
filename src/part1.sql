@@ -57,20 +57,22 @@ LANGUAGE plpgsql AS $$
     END;
 $$;
 
--- CALL prc_dataImport('PersonInformation', 'C:\Coding\Projects\SQL3\datasets\Personal_Data_Mini.tsv', E'\t');
--- CALL prc_dataImport('Cards', 'C:\Coding\Projects\SQL3\datasets\Cards_Mini.tsv', E'\t');
--- CALL prc_dataImport('SKUGroup', 'C:\Coding\Projects\SQL3\datasets\Groups_SKU_Mini.tsv', E'\t');
--- CALL prc_dataImport('ProductGrid', 'C:\Coding\Projects\SQL3\datasets\SKU_Mini.tsv', E'\t');
--- CALL prc_dataImport('Stores', 'C:\Coding\Projects\SQL3\datasets\Stores_Mini.tsv', E'\t');
--- CALL prc_dataImport('Transactions', 'C:\Coding\Projects\SQL3\datasets\Transactions_Mini.tsv', E'\t');
--- CALL prc_dataImport('Checks', 'C:\Coding\Projects\SQL3\datasets\Checks_Mini.tsv', E'\t');
--- CALL prc_dataImport('DateOfAnalysisFormation', 'C:\Coding\Projects\SQL3\datasets\Date_Of_Analysis_Formation.tsv', E'\t');
+SET datestyle TO dmy;
 
--- CALL prc_dataImport('PersonInformation', 'C:\Coding\Projects\SQL3\datasets\Personal_Data.tsv', E'\t');
--- CALL prc_dataImport('Cards', 'C:\Coding\Projects\SQL3\datasets\Cards.tsv', E'\t');
--- CALL prc_dataImport('SKUGroup', 'C:\Coding\Projects\SQL3\datasets\Groups_SKU.tsv', E'\t');
--- CALL prc_dataImport('ProductGrid', 'C:\Coding\Projects\SQL3\datasets\SKU.tsv', E'\t');
--- CALL prc_dataImport('Stores', 'C:\Coding\Projects\SQL3\datasets\Stores.tsv', E'\t');
--- CALL prc_dataImport('Transactions', 'C:\Coding\Projects\SQL3\datasets\Transactions.tsv', E'\t');
--- CALL prc_dataImport('Checks', 'C:\Coding\Projects\SQL3\datasets\Checks.tsv', E'\t');
--- CALL prc_dataImport('DateOfAnalysisFormation', 'C:\Coding\Projects\SQL3\datasets\Date_Of_Analysis_Formation.tsv', E'\t');
+-- CALL prc_dataImport('PersonInformation', '/Users/stevenso/SQL3_RetailAnalitycs_v1.0-1/datasets/Personal_Data_Mini.tsv', E'\t');
+-- CALL prc_dataImport('Cards', '/Users/stevenso/SQL3_RetailAnalitycs_v1.0-1/datasets/Cards_Mini.tsv', E'\t');
+-- CALL prc_dataImport('SKUGroup', '/Users/stevenso/SQL3_RetailAnalitycs_v1.0-1/datasets/Groups_SKU_Mini.tsv', E'\t');
+-- CALL prc_dataImport('ProductGrid', '/Users/stevenso/SQL3_RetailAnalitycs_v1.0-1/datasets/SKU_Mini.tsv', E'\t');
+-- CALL prc_dataImport('Stores', '/Users/stevenso/SQL3_RetailAnalitycs_v1.0-1/datasets/Stores_Mini.tsv', E'\t');
+-- CALL prc_dataImport('Transactions', '/Users/stevenso/SQL3_RetailAnalitycs_v1.0-1/datasets/Transactions_Mini.tsv', E'\t');
+-- CALL prc_dataImport('Checks', '/Users/stevenso/SQL3_RetailAnalitycs_v1.0-1/datasets/Checks_Mini.tsv', E'\t');
+-- CALL prc_dataImport('DateOfAnalysisFormation', '/Users/stevenso/SQL3_RetailAnalitycs_v1.0-1/datasets/Date_Of_Analysis_Formation.tsv', E'\t');
+
+-- CALL prc_dataImport('PersonInformation', '/Users/stevenso/SQL3_RetailAnalitycs_v1.0-1/datasets/Personal_Data.tsv', E'\t');
+-- CALL prc_dataImport('Cards', '/Users/stevenso/SQL3_RetailAnalitycs_v1.0-1/datasets/Cards.tsv', E'\t');
+-- CALL prc_dataImport('SKUGroup', '/Users/stevenso/SQL3_RetailAnalitycs_v1.0-1/datasets/Groups_SKU.tsv', E'\t');
+-- CALL prc_dataImport('ProductGrid', '/Users/stevenso/SQL3_RetailAnalitycs_v1.0-1/datasets/SKU.tsv', E'\t');
+-- CALL prc_dataImport('Stores', '/Users/stevenso/SQL3_RetailAnalitycs_v1.0-1/datasets/Stores.tsv', E'\t');
+-- CALL prc_dataImport('Transactions', '/Users/stevenso/SQL3_RetailAnalitycs_v1.0-1/datasets/Transactions.tsv', E'\t');
+-- CALL prc_dataImport('Checks', '/Users/stevenso/SQL3_RetailAnalitycs_v1.0-1/datasets/Checks.tsv', E'\t');
+-- CALL prc_dataImport('DateOfAnalysisFormation', '/Users/stevenso/SQL3_RetailAnalitycs_v1.0-1/datasets/Date_Of_Analysis_Formation.tsv', E'\t');
