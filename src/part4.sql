@@ -25,9 +25,9 @@ AS $$
     END;
 $$ LANGUAGE plpgsql;
 
-SELECT * FROM fk_formPersonalOfferByGrowthOfAverageCheck(1, '2022-01-01 2023-01-01', 0, 1.0, 0.0, 0.0, 0.0)
+SELECT * FROM fk_formPersonalOfferByGrowthOfAverageCheck(1, '2022-01-01 2023-01-01', 0, 1.0, 0.0, 0.0, 0.0);
 
-SELECT * FROM fk_formPersonalOfferByGrowthOfAverageCheck(2, '', 10, 1.0, 0.0, 0.0, 0.0)
+SELECT * FROM fk_formPersonalOfferByGrowthOfAverageCheck(2, '', 10, 1.0, 0.0, 0.0, 0.0);
 
 
 
