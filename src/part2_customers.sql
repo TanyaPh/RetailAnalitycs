@@ -3,9 +3,9 @@ CREATE OR REPLACE VIEW Customers AS
 WITH Avg_Check AS (
     SELECT Customer_ID, AVG(Transaction_Summ)::decimal as Customer_Average_Check
     FROM Cards c
-    join transactions t on c.customer_card_id = t.customer_card_id
+        JOIN transactions t ON c.customer_card_id = t.customer_card_id
     GROUP BY Customer_ID
-    Order BY Customer_Average_Check desc
+    ORDER BY Customer_Average_Check DESC
 )
    , Avg_Check_Segment AS (
     SELECT *,
@@ -14,16 +14,16 @@ WITH Avg_Check AS (
                 ELSE 'Medium'
             END as Customer_Average_Check_Segment
     FROM Avg_Check
-    Order BY Customer_Average_Check desc
+    ORDER BY Customer_Average_Check DESC
 )
    , Frequency AS (
     SELECT Customer_ID,
            EXTRACT(EPOCH FROM (max(Transaction_DateTime)-min(Transaction_DateTime)))/ 60 / 60 / 24/ count(Transaction_ID)::decimal
                AS Customer_Frequency
     FROM Cards c
-    join transactions t on c.customer_card_id = t.customer_card_id
+        JOIN transactions t ON c.customer_card_id = t.customer_card_id
     GROUP BY Customer_ID
-    Order by Customer_Frequency
+    ORDER BY Customer_Frequency
 )
    , Frequency_Segment AS (
     SELECT *,
@@ -35,23 +35,23 @@ WITH Avg_Check AS (
                ELSE 'Occasionally'
                END as Customer_Frequency_Segment
     FROM Frequency
-    Order BY Customer_Frequency
+    ORDER BY Customer_Frequency
 )
    , Inactive_Period AS (
     SELECT Customer_ID,
            EXTRACT(EPOCH FROM (SELECT * FROM dateofanalysisformation)-max(Transaction_DateTime))::decimal/ 60 / 60 / 24
                AS Customer_Inactive_Period
     FROM Cards
-    join transactions on cards.customer_card_id = transactions.customer_card_id
+        JOIN transactions ON cards.customer_card_id = transactions.customer_card_id
     GROUP BY Customer_ID
-    Order by Customer_Inactive_Period
+    ORDER BY Customer_Inactive_Period
 )
    , Churn_Rate AS (
     SELECT i.customer_id, Customer_Inactive_Period,
            Customer_Inactive_Period/Customer_Frequency AS Customer_Churn_Rate
     FROM Inactive_Period i
-    JOIN Frequency f ON i.customer_id = f.customer_id
-    Order by Customer_Churn_Rate
+        JOIN Frequency f ON i.customer_id = f.customer_id
+    ORDER BY Customer_Churn_Rate
 )
    , Churn_Segment AS (
     SELECT *,
@@ -59,9 +59,9 @@ WITH Avg_Check AS (
                WHEN Customer_Churn_Rate <= 2 THEN 'Low'
                WHEN Customer_Churn_Rate > 5 THEN 'High'
                ELSE 'Medium'
-               END as Customer_Churn_Segment
+               END AS Customer_Churn_Segment
     FROM Churn_Rate
-    Order BY Customer_Churn_Rate
+    ORDER BY Customer_Churn_Rate
 )
    , Segments AS (
     SELECT avg.customer_id, Customer_Average_Check_Segment, Customer_Frequency_Segment, Customer_Churn_Segment,
@@ -133,6 +133,7 @@ WITH Avg_Check AS (
                WHEN Customer_Churn_Segment = 'Low' THEN 0*9
                WHEN Customer_Churn_Segment = 'Medium' THEN 1*9
                WHEN Customer_Churn_Segment = 'High' THEN 2*9
+--                +1
 
 --                WHEN Customer_Average_Check_Segment ='Medium' AND Customer_Frequency_Segment = 'Rarely' AND
 --                     Customer_Churn_Segment = 'Low' THEN 10
@@ -180,7 +181,7 @@ WITH Avg_Check AS (
    , Primary_Store_by_largest_share AS (
     SELECT DISTINCT ON (Customer_ID) customer_id, transaction_store_id AS Customer_Primary_Store, Transaction_DateTime,
             (count(transaction_store_id) over (partition by customer_id, transaction_store_id))/
-            (count(transaction_id) over (partition by customer_id))::decimal as part_transactions_in_store
+            (count(transaction_id) over (partition by customer_id))::decimal AS part_transactions_in_store
     FROM Cards c
          JOIN transactions t ON c.customer_card_id = t.customer_card_id
     ORDER BY Customer_ID, part_transactions_in_store DESC, Transaction_DateTime DESC
@@ -191,12 +192,12 @@ WITH Avg_Check AS (
         SELECT Customer_ID, Transaction_Store_ID, Transaction_DateTime,
                row_number() OVER (PARTITION BY Customer_ID ORDER BY Transaction_DateTime DESC) AS pos
         FROM Cards c
-            JOIN transactions t ON c.customer_card_id = t.customer_card_id) as s1
+            JOIN transactions t ON c.customer_card_id = t.customer_card_id) AS s1
     WHERE pos < 4
     GROUP BY Customer_ID, Transaction_Store_ID
         HAVING COUNT(*) = 3
 )
-   , Primary_Store AS (
+   , Primary_Store AS ( --check_currect
     (SELECT Customer_ID, Customer_Primary_Store FROM Primary_Store_by_largest_share
     EXCEPT
     SELECT Customer_ID, Customer_Primary_Store FROM Primary_Store_by_last_3_transactions)
