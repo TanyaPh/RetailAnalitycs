@@ -1,4 +1,4 @@
--- CREATE OR REPLACE VIEW Groups AS
+CREATE OR REPLACE VIEW Groups AS
 
 WITH Groups_per_customer AS (
     SELECT DISTINCT Customer_ID, Group_ID

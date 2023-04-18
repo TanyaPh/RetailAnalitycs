@@ -65,115 +65,21 @@ WITH Avg_Check AS (
 )
    , Segments AS (
     SELECT avg.customer_id, Customer_Average_Check_Segment, Customer_Frequency_Segment, Customer_Churn_Segment,
+           (CASE
+               WHEN Customer_Average_Check_Segment ='Low'  THEN 0
+               WHEN Customer_Average_Check_Segment ='Medium'  THEN 1
+               WHEN Customer_Average_Check_Segment ='High'  THEN 2
+           END * 9 +
            CASE
-               WHEN Customer_Average_Check_Segment ='Low' AND Customer_Frequency_Segment = 'Rarely' AND
-                    Customer_Churn_Segment = 'Low' THEN 1
-               WHEN Customer_Average_Check_Segment ='Low' AND Customer_Frequency_Segment = 'Rarely' AND
-                    Customer_Churn_Segment = 'Medium' THEN 2
-               WHEN Customer_Average_Check_Segment ='Low' AND Customer_Frequency_Segment = 'Rarely' AND
-                    Customer_Churn_Segment = 'High' THEN 3
-               WHEN Customer_Average_Check_Segment ='Low' AND Customer_Frequency_Segment = 'Occasionally' AND
-                    Customer_Churn_Segment = 'Low' THEN 4
-               WHEN Customer_Average_Check_Segment ='Low' AND Customer_Frequency_Segment = 'Occasionally' AND
-                    Customer_Churn_Segment = 'Medium' THEN 5
-               WHEN Customer_Average_Check_Segment ='Low' AND Customer_Frequency_Segment = 'Occasionally' AND
-                    Customer_Churn_Segment = 'High' THEN 6
-               WHEN Customer_Average_Check_Segment ='Low' AND Customer_Frequency_Segment = 'Often' AND
-                    Customer_Churn_Segment = 'Low' THEN 7
-               WHEN Customer_Average_Check_Segment ='Low' AND Customer_Frequency_Segment = 'Often' AND
-                    Customer_Churn_Segment = 'Medium' THEN 8
-               WHEN Customer_Average_Check_Segment ='Low' AND Customer_Frequency_Segment = 'Often' AND
-                    Customer_Churn_Segment = 'High' THEN 9
-
-               WHEN Customer_Average_Check_Segment ='Medium' AND Customer_Frequency_Segment = 'Rarely' AND
-                    Customer_Churn_Segment = 'Low' THEN 10
-               WHEN Customer_Average_Check_Segment ='Medium' AND Customer_Frequency_Segment = 'Rarely' AND
-                    Customer_Churn_Segment = 'Medium' THEN 11
-               WHEN Customer_Average_Check_Segment ='Medium' AND Customer_Frequency_Segment = 'Rarely' AND
-                    Customer_Churn_Segment = 'High' THEN 12
-               WHEN Customer_Average_Check_Segment ='Medium' AND Customer_Frequency_Segment = 'Occasionally' AND
-                    Customer_Churn_Segment = 'Low' THEN 13
-               WHEN Customer_Average_Check_Segment ='Medium' AND Customer_Frequency_Segment = 'Occasionally' AND
-                    Customer_Churn_Segment = 'Medium' THEN 14
-               WHEN Customer_Average_Check_Segment ='Medium' AND Customer_Frequency_Segment = 'Occasionally' AND
-                    Customer_Churn_Segment = 'High' THEN 15
-               WHEN Customer_Average_Check_Segment ='Medium' AND Customer_Frequency_Segment = 'Often' AND
-                    Customer_Churn_Segment = 'Low' THEN 16
-               WHEN Customer_Average_Check_Segment ='Medium' AND Customer_Frequency_Segment = 'Often' AND
-                    Customer_Churn_Segment = 'Medium' THEN 17
-               WHEN Customer_Average_Check_Segment ='Medium' AND Customer_Frequency_Segment = 'Often' AND
-                    Customer_Churn_Segment = 'High' THEN 18
-
-               WHEN Customer_Average_Check_Segment ='High' AND Customer_Frequency_Segment = 'Rarely' AND
-                    Customer_Churn_Segment = 'Low' THEN 19
-               WHEN Customer_Average_Check_Segment ='High' AND Customer_Frequency_Segment = 'Rarely' AND
-                    Customer_Churn_Segment = 'Medium' THEN 20
-               WHEN Customer_Average_Check_Segment ='High' AND Customer_Frequency_Segment = 'Rarely' AND
-                    Customer_Churn_Segment = 'High' THEN 21
-               WHEN Customer_Average_Check_Segment ='High' AND Customer_Frequency_Segment = 'Occasionally' AND
-                    Customer_Churn_Segment = 'Low' THEN 22
-               WHEN Customer_Average_Check_Segment ='High' AND Customer_Frequency_Segment = 'Occasionally' AND
-                    Customer_Churn_Segment = 'Medium' THEN 23
-               WHEN Customer_Average_Check_Segment ='High' AND Customer_Frequency_Segment = 'Occasionally' AND
-                    Customer_Churn_Segment = 'High' THEN 24
-               WHEN Customer_Average_Check_Segment ='High' AND Customer_Frequency_Segment = 'Often' AND
-                    Customer_Churn_Segment = 'Low' THEN 25
-               WHEN Customer_Average_Check_Segment ='High' AND Customer_Frequency_Segment = 'Often' AND
-                    Customer_Churn_Segment = 'Medium' THEN 26
-               WHEN Customer_Average_Check_Segment ='High' AND Customer_Frequency_Segment = 'Often' AND
-                    Customer_Churn_Segment = 'High' THEN 27
-            END as Customer_Segment,
+               WHEN Customer_Frequency_Segment = 'Rarely' THEN 0
+               WHEN Customer_Frequency_Segment = 'Occasionally' THEN 1
+               WHEN Customer_Frequency_Segment = 'Often' THEN 2
+           END * 3 +
            CASE
-               WHEN Customer_Average_Check_Segment ='Low'  THEN 0*1
-               WHEN Customer_Average_Check_Segment ='Medium'  THEN 1*1
-               WHEN Customer_Average_Check_Segment ='High'  THEN 2*1
-               WHEN Customer_Frequency_Segment = 'Rarely' THEN 0*3
-               WHEN Customer_Frequency_Segment = 'Occasionally' THEN 1*3
-               WHEN Customer_Frequency_Segment = 'Often' THEN 2*3
-               WHEN Customer_Churn_Segment = 'Low' THEN 0*9
-               WHEN Customer_Churn_Segment = 'Medium' THEN 1*9
-               WHEN Customer_Churn_Segment = 'High' THEN 2*9
---                +1
-
---                WHEN Customer_Average_Check_Segment ='Medium' AND Customer_Frequency_Segment = 'Rarely' AND
---                     Customer_Churn_Segment = 'Low' THEN 10
---                WHEN Customer_Average_Check_Segment ='Medium' AND Customer_Frequency_Segment = 'Rarely' AND
---                     Customer_Churn_Segment = 'Medium' THEN 11
---                WHEN Customer_Average_Check_Segment ='Medium' AND Customer_Frequency_Segment = 'Rarely' AND
---                     Customer_Churn_Segment = 'High' THEN 12
---                WHEN Customer_Average_Check_Segment ='Medium' AND Customer_Frequency_Segment = 'Occasionally' AND
---                     Customer_Churn_Segment = 'Low' THEN 13
---                WHEN Customer_Average_Check_Segment ='Medium' AND Customer_Frequency_Segment = 'Occasionally' AND
---                     Customer_Churn_Segment = 'Medium' THEN 14
---                WHEN Customer_Average_Check_Segment ='Medium' AND Customer_Frequency_Segment = 'Occasionally' AND
---                     Customer_Churn_Segment = 'High' THEN 15
---                WHEN Customer_Average_Check_Segment ='Medium' AND Customer_Frequency_Segment = 'Often' AND
---                     Customer_Churn_Segment = 'Low' THEN 16
---                WHEN Customer_Average_Check_Segment ='Medium' AND Customer_Frequency_Segment = 'Often' AND
---                     Customer_Churn_Segment = 'Medium' THEN 17
---                WHEN Customer_Average_Check_Segment ='Medium' AND Customer_Frequency_Segment = 'Often' AND
---                     Customer_Churn_Segment = 'High' THEN 18
---
---                WHEN Customer_Average_Check_Segment ='High' AND Customer_Frequency_Segment = 'Rarely' AND
---                     Customer_Churn_Segment = 'Low' THEN 19
---                WHEN Customer_Average_Check_Segment ='High' AND Customer_Frequency_Segment = 'Rarely' AND
---                     Customer_Churn_Segment = 'Medium' THEN 20
---                WHEN Customer_Average_Check_Segment ='High' AND Customer_Frequency_Segment = 'Rarely' AND
---                     Customer_Churn_Segment = 'High' THEN 21
---                WHEN Customer_Average_Check_Segment ='High' AND Customer_Frequency_Segment = 'Occasionally' AND
---                     Customer_Churn_Segment = 'Low' THEN 22
---                WHEN Customer_Average_Check_Segment ='High' AND Customer_Frequency_Segment = 'Occasionally' AND
---                     Customer_Churn_Segment = 'Medium' THEN 23
---                WHEN Customer_Average_Check_Segment ='High' AND Customer_Frequency_Segment = 'Occasionally' AND
---                     Customer_Churn_Segment = 'High' THEN 24
---                WHEN Customer_Average_Check_Segment ='High' AND Customer_Frequency_Segment = 'Often' AND
---                     Customer_Churn_Segment = 'Low' THEN 25
---                WHEN Customer_Average_Check_Segment ='High' AND Customer_Frequency_Segment = 'Often' AND
---                     Customer_Churn_Segment = 'Medium' THEN 26
---                WHEN Customer_Average_Check_Segment ='High' AND Customer_Frequency_Segment = 'Often' AND
---                     Customer_Churn_Segment = 'High' THEN 27
-            END as Seg
-
+               WHEN Customer_Churn_Segment = 'Low' THEN 0
+               WHEN Customer_Churn_Segment = 'Medium' THEN 1
+               WHEN Customer_Churn_Segment = 'High' THEN 2
+           END + 1) AS Customer_Segment
     FROM Avg_Check_Segment avg
     JOIN Frequency_Segment fr ON fr.customer_id = avg.customer_id
     JOIN Churn_Segment ch ON ch.customer_id = avg.customer_id
