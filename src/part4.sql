@@ -1,33 +1,3 @@
-CREATE OR REPLACE FUNCTION fk_formPersonalOfferByGrowthOfAverageCheck(method int,
-                                                                      separated_dates varchar,
-                                                                      transactions_count int,
-                                                                      growth_of_check decimal,
-                                                                      max_churn_index numeric,
-                                                                      max_discount_share numeric,
-                                                                      share_of_margin numeric)
-RETURNS table(Customer_ID bigint,
-              Required_Check_Measure decimal,
-              Group_Name varchar,
-              Offer_Discount_Depth decimal)
-AS $$
-    BEGIN
-        IF method = 1 THEN
-            RETURN QUERY (
-                SELECT av.Customer_ID, round(av.AverageCheck * growth_of_check, 2), gr.GroupName, gr.Offer_Discount_Depth
-                FROM fk_getAverageCheckByTransactionsBetweenDates(split_part(separated_dates, ' ', 1)::date, split_part(separated_dates, ' ', 2)::date) AS av
-                JOIN fk_determineGroupAndDiscount(max_churn_index, max_discount_share, share_of_margin) gr ON gr.Customer_ID = av.Customer_ID
-            );
-        ELSEIF method = 2 THEN
-            RETURN QUERY (
-                SELECT av.Customer_ID, round(av.AverageCheck * growth_of_check, 2), gr.GroupName, gr.Offer_Discount_Depth
-                FROM fk_getAverageCheckByNLastTransactions(transactions_count) AS av
-                JOIN fk_determineGroupAndDiscount(max_churn_index, max_discount_share, share_of_margin) gr ON gr.Customer_ID = av.Customer_ID
-            );
-        END IF;
-    END;
-$$ LANGUAGE plpgsql;
-
-
 CREATE OR REPLACE FUNCTION fk_getAverageCheckByNLastTransactions(N bigint)
 RETURNS table(Customer_ID bigint, AverageCheck decimal)
 AS $$
@@ -76,6 +46,39 @@ AS $$
          JOIN stores s2 ON gr.group_id = s.group_id AND s.sku_id = s2.sku_id) * max_margin
     ORDER BY Offer_Discount_Depth
 $$ LANGUAGE SQL;
+
+
+CREATE OR REPLACE FUNCTION fk_formPersonalOfferByGrowthOfAverageCheck(method int,
+                                                                      separated_dates varchar,
+                                                                      transactions_count int,
+                                                                      growth_of_check decimal,
+                                                                      max_churn_index numeric,
+                                                                      max_discount_share numeric,
+                                                                      share_of_margin numeric)
+RETURNS table(Customer_ID bigint,
+              Required_Check_Measure decimal,
+              Group_Name varchar,
+              Offer_Discount_Depth decimal)
+AS $$
+    BEGIN
+        IF method = 1 THEN
+            RETURN QUERY (
+                SELECT av.Customer_ID, round(av.AverageCheck * growth_of_check, 2), gr.GroupName, gr.Offer_Discount_Depth
+                FROM fk_getAverageCheckByTransactionsBetweenDates(split_part(separated_dates, ' ', 1)::date, split_part(separated_dates, ' ', 2)::date) AS av
+                JOIN fk_determineGroupAndDiscount(max_churn_index, max_discount_share, share_of_margin) gr ON gr.Customer_ID = av.Customer_ID
+            );
+        ELSEIF method = 2 THEN
+            RETURN QUERY (
+                SELECT av.Customer_ID, round(av.AverageCheck * growth_of_check, 2), gr.GroupName, gr.Offer_Discount_Depth
+                FROM fk_getAverageCheckByNLastTransactions(transactions_count) AS av
+                JOIN fk_determineGroupAndDiscount(max_churn_index, max_discount_share, share_of_margin) gr ON gr.Customer_ID = av.Customer_ID
+            );
+        END IF;
+    END;
+$$ LANGUAGE plpgsql;
+
+
+-----------------------------
 
 
 SELECT * FROM fk_formPersonalOfferByGrowthOfAverageCheck(1, '2022-01-01 2023-01-01', 0, 1.0, 3.0, 70.0, 30.0);
