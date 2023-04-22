@@ -68,9 +68,9 @@ AS $$
         ceil(gr.group_minimum_discount * 100 / 5.0) * 5.0 AS Offer_Discount_Depth
     FROM groups gr
     JOIN skugroup s on gr.group_id = s.group_id
-    WHERE gr.group_churn_rate <= max_churn_rate AND gr.group_discount_share < max_discount_share / 100
+    WHERE gr.group_minimum_discount::decimal(5, 2) > 0 AND gr.group_churn_rate <= max_churn_rate AND gr.group_discount_share < max_discount_share / 100
     AND
-        ceil(gr.group_minimum_discount * 100 / 5.0) * 5.0 <
+        ceil((gr.group_minimum_discount::decimal(5, 2) * 100) / 5.0) * 5.0 <
         (SELECT sum(s2.sku_retail_price - s2.sku_purchase_price) / sum(s2.sku_retail_price)
          FROM productgrid s
          JOIN stores s2 ON gr.group_id = s.group_id AND s.sku_id = s2.sku_id) * max_margin
