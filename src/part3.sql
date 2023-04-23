@@ -1,8 +1,9 @@
-Create role adm;
-select rolname from pg_roles;
+SELECT rolname FROM pg_roles;
 
-Create role administrator with superuser;
-select rolname from pg_roles;
+CREATE ROLE administrator WITH SUPERUSER LOGIN;
+SELECT rolname FROM pg_roles;
 
-create role visitor with NOSUPERUSER;
-select rolname from pg_roles;
+
+CREATE ROLE visitor WITH LOGIN;
+GRANT SELECT ON ALL TABLES IN SCHEMA public TO visitor;
+SELECT rolname FROM pg_roles;
